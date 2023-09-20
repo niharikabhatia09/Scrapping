@@ -1,0 +1,19 @@
+import requests
+from bs4 import BeautifulSoup
+
+Define a function to scrape the title of a website
+def scrape_title(url):
+response = requests.get(url)
+soup = BeautifulSoup(response.content, "html.parser")
+title = soup.find("title").text
+return title
+
+Define a test case for the scrape_title() function
+def test_scrape_title():
+url = "https://www.google.com"
+expected_title = "Google"
+actual_title = scrape_title(url)
+assert actual_title == expected_title
+
+Run the test case
+test_scrape_title()
