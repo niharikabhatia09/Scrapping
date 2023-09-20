@@ -1,0 +1,39 @@
+import requests
+from bs4 import BeautifulSoup
+import unittest
+
+Function to scrape article titles from a URL
+def scrape_article_titles(url):
+response = requests.get(url)
+
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, 'html.parser')
+    titles = []
+    
+    # Assuming article titles are contained within <h2> tags
+    for h2_tag in soup.find_all('h2'):
+        titles.append(h2_tag.text)
+    
+    return titles
+else:
+    return None
+Test cases using unittest
+class TestWebScraping(unittest.TestCase):
+def test_successful_scrape(self):
+url = 'https://example.com/news'
+titles = scrape_article_titles(url)
+self.assertIsNotNone(titles)
+self.assertTrue(len(titles) > 0)
+
+def test_invalid_url(self):
+    url = 'https://example.com/nonexistentpage'
+    titles = scrape_article_titles(url)
+    self.assertIsNone(titles)
+
+def test_empty_page(self):
+    url = 'https://example.com/emptypage'
+    titles = scrape_article_titles(url)
+    self.assertIsNotNone(titles)
+    self.assertEqual(len(titles), 0)
+if name == 'main':
+unittest.main()
