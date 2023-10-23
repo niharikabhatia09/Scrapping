@@ -1,0 +1,45 @@
+import requests
+from bs4 import BeautifulSoup
+def scrape_article_info(url):
+    try:
+       
+        response = requests.get(url)
+        response.raise_for_status()
+
+       
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        
+        article_name = soup.find('h1').text  # Example: assuming the article name is in an <h1> tag
+        byline = soup.find('p', class_='byline').text  # Example: assuming the byline is in a <p> tag with class 'byline'
+        content = ' '.join([p.text for p in soup.find_all('p')])  # Example: assuming the content is in <p> tags
+        date = soup.find('time').text  # Example: assuming the date is in a <time> tag
+
+        return {
+            'Article Name': article_name,
+            'Byline': byline,
+            'Content': content,
+            'Date': date
+        }
+    except Exception as e:
+        return {
+            'Error': str(e)
+        }
+
+
+with open('links.txt', 'r') as file:
+    urls = file.read().splitlines()
+
+
+article_info_list = [scrape_article_info(url) for url in urls]
+
+
+for article_info in article_info_list:
+    if 'Error' in article_info:
+        print(f"Error: {article_info['Error']}")
+    else:
+        print(f"Article Name: {article_info['Article Name']}")
+        print(f"Byline: {article_info['Byline']}")
+        print(f"Content: {article_info['Content']}")
+        print(f"Date: {article_info['Date']}")
+        print("\n")
